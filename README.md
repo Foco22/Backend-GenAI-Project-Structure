@@ -1,10 +1,10 @@
-# Redmine Assistant
+# GenAI Assistant
 
 A conversational AI assistant for Redmine project management, built with FastAPI backend and Streamlit frontend.
 
 ## Project Overview
 
-The Redmine Assistant is a chatbot that uses OpenAI's GPT-3.5-turbo model to answer Redmine-related queries. It consists of:
+The GenAI Assistant is a chatbot that uses OpenAI's GPT-3.5-turbo model to answer Redmine-related queries. It consists of:
 
 - **FastAPI Backend**: Handles API requests and communicates with OpenAI
 - **Streamlit Frontend**: Provides a user-friendly chat interface
