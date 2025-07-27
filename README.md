@@ -130,7 +130,7 @@ docker logs redmine-api
 ├── Dockerfile             # Docker configuration
 ├── .env                   # Environment variables (not in repo)
 ├── data/                  # Data directory
-│   ├── database/          # Database files
+│   ├── database/          # Database connections
 │   ├── embeddings/        # Vector embeddings
 │   ├── outputs/           # Generated outputs
 │   └── prompts/           # Prompt templates
@@ -142,8 +142,9 @@ docker logs redmine-api
 │   │   └── openai.py      # OpenAI integration
 │   ├── models/            # Data models and schemas
 │   ├── redmine/           # Redmine API integration
+│   ├── databases/         # Database connections
 │   └── utils/             # Utility functions
-└── streamlit_app/         # Streamlit frontend
+├── streamlit_app/         # Streamlit frontend
     └── app.py             # Streamlit app entry point
 ├── github/workflows/      # GitHub Actions workflows
 ```
