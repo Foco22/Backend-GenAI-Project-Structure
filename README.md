@@ -145,6 +145,7 @@ docker logs redmine-api
 │   └── utils/             # Utility functions
 └── streamlit_app/         # Streamlit frontend
     └── app.py             # Streamlit app entry point
+├── github/workflows/      # GitHub Actions workflows
 ```
 
 ## Features
