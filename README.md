@@ -130,7 +130,6 @@ docker logs redmine-api
 ├── Dockerfile             # Docker configuration
 ├── .env                   # Environment variables (not in repo)
 ├── data/                  # Data directory
-│   ├── database/          # Database connections
 │   ├── embeddings/        # Vector embeddings
 │   ├── outputs/           # Generated outputs
 │   └── prompts/           # Prompt templates
