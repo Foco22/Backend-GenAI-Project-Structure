@@ -129,11 +129,22 @@ docker logs redmine-api
 ├── requirements.txt        # Project dependencies
 ├── Dockerfile             # Docker configuration
 ├── .env                   # Environment variables (not in repo)
-├── src/
-│   └── llm/
-│       └── openai.py      # OpenAI integration
-└── streamlit_app/
-    └── app.py             # Streamlit frontend
+├── data/                  # Data directory
+│   ├── database/          # Database files
+│   ├── embeddings/        # Vector embeddings
+│   ├── outputs/           # Generated outputs
+│   └── prompts/           # Prompt templates
+├── notebooks/             # Jupyter notebooks for exploration and analysis
+├── src/                   # Source code
+│   ├── agents/            # Agent implementations
+│   ├── handlers/          # Request handlers
+│   ├── llm/               # Language model integrations
+│   │   └── openai.py      # OpenAI integration
+│   ├── models/            # Data models and schemas
+│   ├── redmine/           # Redmine API integration
+│   └── utils/             # Utility functions
+└── streamlit_app/         # Streamlit frontend
+    └── app.py             # Streamlit app entry point
 ```
 
 ## Features
