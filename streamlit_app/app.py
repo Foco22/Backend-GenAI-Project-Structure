@@ -8,6 +8,8 @@ from datetime import datetime
 
 # Add the project root to the Python path to enable imports
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from src.agents.agent import call_agent
 from src.llm.openai import OpenAI
 
 # Set page configuration
@@ -60,16 +62,21 @@ def get_assistant_response(query, conversation_history=None):
     except Exception as e:
         raise Exception(f"Error getting response from model: {str(e)}")
 
-# Initialize chat history
+# Initialize chat history and session ID
+import uuid
+
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
+
 if "messages" not in st.session_state:
     st.session_state.messages = [
-        {"role": "assistant", "content": "Hello! I'm your Redmine Assistant. How can I help you today?"}
+        {"role": "assistant", "content": "¡Hola! Soy tu asistente de Redmine. ¿En qué puedo ayudarte hoy?"}
     ]
     
 # Clear chat history button
 if st.sidebar.button("Clear Chat History"):
     st.session_state.messages = [
-        {"role": "assistant", "content": "Hello! I'm your Redmine Assistant. How can I help you today?"}
+        {"role": "assistant", "content": "¡Hola! Soy tu asistente de Redmine. ¿En qué puedo ayudarte hoy?"}
     ]
     st.rerun()
 
@@ -114,7 +121,26 @@ def prepare_conversation_history():
 # Helper function to display bot response
 def display_bot_response(response_content):
     """Add the bot's response to chat history"""
-    st.session_state.messages.append({"role": "assistant", "content": response_content})
+    # Check if the response is a dict with tool calls
+    if isinstance(response_content, dict) and 'tool_calls' in response_content:
+        # Add assistant message with tool calls
+        st.session_state.messages.append({
+            "role": "assistant", 
+            "content": response_content.get('content', ''),
+            "tool_calls": response_content['tool_calls']
+        })
+        
+        # If there are tool results, add them as tool messages
+        if 'tool_results' in response_content:
+            for tool_result in response_content['tool_results']:
+                st.session_state.messages.append({
+                    "role": "tool",
+                    "content": tool_result['content'],
+                    "tool_call_id": tool_result['tool_call_id']
+                })
+    else:
+        # Simple text response
+        st.session_state.messages.append({"role": "assistant", "content": response_content})
     # No rerun needed here
 
 # Helper function to generate fallback responses
@@ -152,11 +178,23 @@ if user_input:
             conversation_history = prepare_conversation_history()
             
             # Get response from model
-            response_content = get_assistant_response(user_input, conversation_history)
-            print('Response content:', response_content)
-            
-            # Add response to chat history and update UI
-            display_bot_response(response_content)
+            # This is the Redmine username that will be used in the system message
+            # and for automatically handling queries about "my tasks" or "my projects"
+            user_str = 'sally'  # In a real app, this would come from authentication
+            try:
+                response_content = call_agent(user_input, st.session_state.session_id, user_str, conversation_history)
+                if isinstance(response_content, dict) and 'message' in response_content:
+                    message_response = response_content['message']
+                    print('Response content:', message_response)
+                    
+                    # Add response to chat history and update UI
+                    display_bot_response(message_response)
+                else:
+                    print('Unexpected response format:', response_content)
+                    display_bot_response("I'm sorry, I encountered an error processing your request.")
+            except Exception as e:
+                print(f"Error in call_agent: {str(e)}")
+                display_bot_response("I'm sorry, I encountered an error processing your request.")
             
         except Exception as e:
             # Log the error
